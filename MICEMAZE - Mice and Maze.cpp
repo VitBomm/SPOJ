@@ -56,15 +56,15 @@ int main()
             graph[b].push_back(pair<int, int>(a,w));
     }
     Dijkstra(exit);
-    int count = 0;
+    int countt = 0;
     for(int i = 1 ; i<=n;i++)
     {
         if(dist[i] <= time)
         {
-            count++;
+            countt++;
         }
     }
-    cout<<count;
+    cout<<countt;
     
     return 0;
 }
