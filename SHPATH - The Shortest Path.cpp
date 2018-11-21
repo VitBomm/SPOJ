@@ -1,82 +1,74 @@
 #include <iostream>
-#include <vector>
 #include <queue>
-#include <functional>
-#include <algorithm>
+#include <vector>
 #include <map>
-#include <iterator>
+#include <algorithm>
 #define MAX 10005
-const int INF = 1e9;
+const int INF = 10e9;
 using namespace std;
-vector<vector<pair<int,int>>> graph;
-vector<int> dist(MAX, INF);
-int path[MAX];
-
+vector<vector<pair<int,int> > > graph;
+vector<int> dist(MAX,INF);
 struct option
 {
-    bool operator()(const pair<int, int> &a, const pair<int, int> &b) const
+    bool operator()(const pair<int,int> &a, const pair<int,int> &b)
     {
         return a.second > b.second;
     }
-    
 };
-void Dijkstra(int s)
+void Dijstras(int s)
 {
-    priority_queue<pair<int, int>,vector<pair<int,int>>,option> pq;
-    pq.push(make_pair(s, 0));
+    priority_queue<pair<int,int>, vector<pair<int,int> > , option> pq;
+    pq.push(make_pair(s,0));
     dist[s] = 0;
-    while (!pq.empty()) {
-        pair<int, int> top = pq.top();
-        pq.pop();
+    while(!pq.empty())
+    {
+        pair<int,int> top = pq.top();
         int u = top.first;
         int w = top.second;
-        for(int i = 0; i < graph[u].size();i++)
+        pq.pop();
+        for(int i = 0 ; i < graph[u].size();i++)
         {
-            pair<int, int> neighbor = graph[u][i];
-            if(w+neighbor.second < dist[neighbor.first])
+            pair<int,int> neighbor = graph[u][i];
+            if(w + neighbor.second < dist[neighbor.first])
             {
                 dist[neighbor.first] = w + neighbor.second;
-                pq.push(pair<int, int>(neighbor.first, dist[neighbor.first]));
-                path[neighbor.first] = u;
+                pq.push(make_pair(neighbor.first,dist[neighbor.first]));
+
             }
         }
     }
 }
 int main()
 {
-    int Q,n;
-    cin>>Q;
-    while (Q--) {
-        // NOTE
-        cin>>n;
+    int T,e,a,b;
+    cin>>T;
+    while(T--)
+    {
+        int n;
         map<string,int> mapp;
-        map<string,int>::iterator it;
-        graph = vector<vector<pair<int, int>>> (MAX + 5, vector<pair<int, int>>());
-        string a;
-        int m,b,c;
-        for(int i = 1;i<=n; i++)
+        graph = vector<vector<pair<int,int> > >(MAX,vector<pair<int,int> >());
+        dist = vector<int>(MAX,INF);
+        cin>>n;
+        string city;
+        for(int i = 1 ; i<=n;i++)
         {
-            cin>>a;
-            mapp[a] = i;
-            cin>>m;
-            for(int j = 0; j <m;j++)
+            cin>>city;
+            mapp[city] = i;
+            cin>>e;
+            for(int j = 0; j<e;j++)
             {
-                cin>>b;
-                cin>>c;
-                graph[i].push_back(pair<int, int>(b,c));
+                cin>>a>>b;
+                graph[i].push_back(make_pair(a,b));
             }
         }
-        int rs;
-        cin>>rs;
-        string name1,name2;
-        while(rs--)
+        cin>>e;
+        string city1,city2;
+        while(e--)
         {
-            cin>>name1>>name2;
-            it = mapp.find(name1);
+            cin>>city1>>city2;
             dist = vector<int>(MAX,INF);
-            Dijkstra(it->second);
-            it = mapp.find(name2);
-            cout<<dist[it->second]<<endl;
+            Dijstras(mapp[city1]);
+            cout<<dist[mapp[city2]]<<endl;
         }
     }
     return 0;
