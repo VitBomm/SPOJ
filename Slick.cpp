@@ -1,89 +1,94 @@
-
 #include <iostream>
+#include <vector>
 #include <queue>
-#define MAX 251
+#include <map>
+#define MAX 253
 using namespace std;
-const int dr[] = {0, 0, 1, -1};
-const int dc[] = {1, -1, 0, 0};
-int w,h;
-int dem=1;
-bool visited[MAX][MAX];
 int maze[MAX][MAX];
-vector<int> v;
-struct Cell {
-    int r, c;
-    bool operator == (const Cell &other) {
+bool visited[MAX][MAX];
+const int dr[] = {0,0,1,-1};
+const int dc[] = {1,-1,0,0};
+int w,h;
+struct Cell
+{
+    int r;
+    int c;
+    bool operator ==(const Cell &other)
+    {
         return r == other.r && c == other.c;
     }
 };
-
-bool isValid(int r, int c) {
-    return r >= 0 && r < h && c >= 0 && c < w;
+bool IsValid(int r, int c)
+{
+    return r >= 0 && r< h && c>=0 && c<w;
 }
-
-int BFS(Cell s) {
-    dem = 1;
+int BFS(Cell s)
+{
+    int dem = 1;
     queue<Cell> q;
-    visited[s.r][s.c] = true;
     q.push(s);
-    while (!q.empty()) {
+    visited[s.r][s.c] = true;
+    while(!q.empty())
+    {
         Cell u = q.front();
         q.pop();
-        for (int i = 0; i < 4; i++) {
+        for(int i = 0 ; i< 4;i++)
+        {
             int r = u.r + dr[i];
             int c = u.c + dc[i];
-            if (isValid(r, c) && maze[r][c] == 1 && !visited[r][c]) {
+            if(!visited[r][c] && maze[r][c] == 1 && IsValid(r,c))
+            {
                 visited[r][c] = true;
-                q.push((Cell) {r, c});
+                q.push((Cell){r,c});
                 dem++;
             }
         }
     }
-    
     return dem;
 }
-
-int main() {
-    while (true) {
-         v = vector<int>(MAX*MAX,0);
+int main()
+{
+    while(true)
+    {
+        map<int,int> mapp;
         cin>>h>>w;
-        if(h==0 && w==0)
+        if(w==0 && h ==0)
         {
             break;
         }
-        for (int i = 0; i < h; i++) {
-            for (int j =0; j<w; j++) {
+        for(int i = 0 ;i<h;i++)
+        {
+            for(int j = 0;j<w;j++)
+            {
                 cin>>maze[i][j];
             }
         }
-        Cell start;
-        for (int i = 0; i<h; i++) {
-            for (int j = 0; j<w; j++) {
+        for(int i = 0 ;i<h;i++)
+        {
+            for(int j = 0;j<w;j++)
+            {
                 visited[i][j] = false;
             }
         }
-        int count = 0;
-        for (int i = 0; i < h; i++) {
-            for (int j = 0; j < w; j++) {
-                if(maze[i][j]== 1 && visited[i][j] == false)
+        int countt = 0;
+        for(int i = 0 ;i<h;i++)
+        {
+            for(int j = 0;j<w;j++)
+            {
+                if(maze[i][j] == 1 && visited[i][j] == false)
                 {
-                    start.r = i;
-                    start.c = j;
-                    int temp = BFS(start);
-                    v[temp]++;
-//                    cout<<temp<<"\t";
-                    count++;
+                    int temp = BFS((Cell){i,j});
+                    mapp[temp]++;
+                    countt++;
                 }
             }
         }
-        cout<<count<<endl;
-        for(int i = 1; i<MAX*MAX;i++)
-            {
-                if(v[i]!=0)
-                    {
-                        cout<<i<<" "<<v[i]<<endl;
-                    }
-            }
+        map<int,int>::iterator it;
+        cout<<countt<<endl;
+        for(it = mapp.begin(); it!= mapp.end();it++)
+        {
+            cout<<it->first<<" "<<it->second<<endl;
+        }
     }
     return 0;
 }
